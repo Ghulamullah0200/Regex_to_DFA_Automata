@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Regex to DFA Converter | Theory of Automata</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="navbar">
+        <div class="brand">
+          <span class="brand-mark">Σ</span>
+          <div>
+            <strong>Regex2DFA</strong>
+            <small>Theory of Automata Project</small>
+          </div>
+        </div>
+        <div class="nav-links">
+          <a href="#converter">Converter</a>
+          <a href="#visualizer">Visualizer</a>
+          <a href="#table">Transition Table</a>
+          <a href="#history">SQL History</a>
+        </div>
+      </nav>
+
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Iqra University · BSCS · 5th Semester</p>
+          <h1>Regex to DFA Converter with Live Machine Visualization</h1>
+          <p>
+            Enter a valid regular expression and the system generates its DFA, visual graph, transition table,
+            final states, dead state, and sample accepted/rejected strings.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#converter">Start Conversion</a>
+            <a class="btn ghost" href="#how-it-works">How it Works</a>
+          </div>
+        </div>
+        <div class="hero-card">
+          <span class="badge">Supported Operators</span>
+          <div class="operator-grid">
+            <div><b>+</b><span>Union</span></div>
+            <div><b>|</b><span>Union</span></div>
+            <div><b>*</b><span>Kleene Star</span></div>
+            <div><b>()</b><span>Grouping</span></div>
+            <div><b>ab</b><span>Concatenation</span></div>
+            <div><b>ε/e</b><span>Epsilon</span></div>
+          </div>
+        </div>
+      </section>
+    </header>
+
+    <main>
+      <section class="panel converter-panel" id="converter">
+        <div class="section-title">
+          <p>Step 01</p>
+          <h2>Enter Regular Expression</h2>
+        </div>
+        <form id="regexForm" class="regex-form">
+          <div class="input-group">
+            <label for="regexInput">Regular Expression</label>
+            <input id="regexInput" name="regex" value="(a+b)*aba(a+b)*" autocomplete="off" placeholder="Example: (a+b)*aba(a+b)*" />
+          </div>
+          <button class="btn primary" type="submit">Generate DFA</button>
+          <button class="btn secondary" type="button" id="resetBtn">Refresh / Clear</button>
+        </form>
+
+        <div class="preset-row" aria-label="preset regular expressions">
+          <button data-regex="(a+b)*aba(a+b)*">(a+b)*aba(a+b)*</button>
+          <button data-regex="a(a+b)*a">a(a+b)*a</button>
+          <button data-regex="aa(a+b)*b">aa(a+b)*b</button>
+          <button data-regex="0(0+1)*01">0(0+1)*01</button>
+          <button data-regex="(0+1)*101">(0+1)*101</button>
+        </div>
+
+        <div id="message" class="message hidden"></div>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="stat-card">
+          <span>Alphabet</span>
+          <strong id="alphabetStat">-</strong>
+        </article>
+        <article class="stat-card">
+          <span>DFA States</span>
+          <strong id="statesStat">-</strong>
+        </article>
+        <article class="stat-card">
+          <span>Final States</span>
+          <strong id="finalStat">-</strong>
+        </article>
+        <article class="stat-card">
+          <span>Dead State</span>
+          <strong id="deadStat">-</strong>
+        </article>
+      </section>
+
+      <section class="panel" id="visualizer">
+        <div class="section-title row-title">
+          <div>
+            <p>Step 02</p>
+            <h2>DFA Graph Visualization</h2>
+          </div>
+          <div class="legend">
+            <span><i class="dot start"></i>Start</span>
+            <span><i class="dot final"></i>Final</span>
+            <span><i class="dot dead"></i>Dead</span>
+          </div>
+        </div>
+        <div class="graph-shell">
+          <svg id="dfaSvg" viewBox="0 0 980 540" role="img" aria-label="DFA graph visualization">
+            <defs>
+              <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L0,6 L9,3 z" class="arrow-head"></path>
+              </marker>
+            </defs>
+            <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" class="empty-graph">
+              Enter a regex and click Generate DFA.
+            </text>
+          </svg>
+        </div>
+      </section>
+
+      <section class="panel simulator-panel">
+        <div class="section-title">
+          <p>Step 03</p>
+          <h2>Run a String on DFA</h2>
+        </div>
+        <div class="simulator-row">
+          <input id="testString" placeholder="Example input string: ababa" autocomplete="off" />
+          <button id="runStringBtn" class="btn primary" type="button">Run Machine</button>
+        </div>
+        <div id="simulationOutput" class="simulation-output">Machine path will appear here.</div>
+      </section>
+
+      <section class="panel" id="table">
+        <div class="section-title">
+          <p>Step 04</p>
+          <h2>DFA Transition Table</h2>
+        </div>
+        <div class="table-wrapper">
+          <table id="transitionTable">
+            <thead>
+              <tr><th>State</th><th>Type</th><th>Input</th><th>Next State</th></tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="4">No transition table generated yet.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel" id="how-it-works">
+          <div class="section-title">
+            <p>Step 05</p>
+            <h2>Generated Explanation</h2>
+          </div>
+          <div id="explanation" class="explanation">
+            <p>The explanation will appear after conversion.</p>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="section-title">
+            <p>Step 06</p>
+            <h2>Sample Strings</h2>
+          </div>
+          <div class="samples">
+            <div>
+              <h3>Accepted</h3>
+              <ul id="acceptedSamples"><li>-</li></ul>
+            </div>
+            <div>
+              <h3>Rejected</h3>
+              <ul id="rejectedSamples"><li>-</li></ul>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel" id="history">
+        <div class="section-title row-title">
+          <div>
+            <p>SQL Database</p>
+            <h2>Recent Regex Conversions</h2>
+          </div>
+          <button id="loadHistoryBtn" class="btn secondary" type="button">Load SQL History</button>
+        </div>
+        <p class="muted-text">
+          On Vercel, connect a PostgreSQL/Neon database and set <code>DATABASE_URL</code>. The converter still works even if SQL is not configured locally.
+        </p>
+        <div class="table-wrapper">
+          <table id="historyTable">
+            <thead>
+              <tr><th>ID</th><th>Regex</th><th>Alphabet</th><th>States</th><th>Transitions</th><th>Final</th><th>Date</th></tr>
+            </thead>
+            <tbody><tr><td colspan="7">Click Load SQL History.</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <strong>Regex2DFA</strong> · Regular Expression to Deterministic Finite Automata · HTML, CSS, JavaScript, Node API, SQL
+    </footer>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

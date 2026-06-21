@@ -1,0 +1,30 @@
+{
+  "name": "regex-to-dfa-converter",
+  "version": "1.0.0",
+  "description": "Web based Regex to DFA converter for Theory of Automata with DFA visualization, transition table and SQL history.",
+  "main": "api/convert.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "vercel dev",
+    "test": "node tests/regexToDfa.test.js"
+  },
+  "keywords": [
+    "theory-of-automata",
+    "regex",
+    "dfa",
+    "nfa",
+    "vercel",
+    "postgresql"
+  ],
+  "author": "Iqra University BSCS Student",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.1.0"
+  },
+  "devDependencies": {
+    "vercel": "^54.14.5"
+  }
+}
